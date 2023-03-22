@@ -16,9 +16,8 @@ export default (app) => {
   });
 
   app.use((err, req, res, next) => {
-    flr("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
     flg(err.statusCode);
-    res.status(err.statusCode).json({
+    res.status(err.statusCode || 500).json({
       status: err.status,
       error: err,
       message: err.message,

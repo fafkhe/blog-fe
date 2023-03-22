@@ -25,4 +25,21 @@ export default {
       },
     });
   },
+
+  getSingleBlog: async (req, res, next) => {
+    console.log("pop*******************");
+    console.log(req.params);
+    const singleBlog = await Blog.findById(req.params._id);
+    console.log("after single");
+    if (!singleBlog) {
+      return next(new AppError("No blog found with that ID", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        singleBlog,
+      },
+    });
+  },
 };

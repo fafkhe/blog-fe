@@ -6,5 +6,6 @@ const router = Router();
 
 router.post("/createblog", catchAsync(blogController.createBlog));
 router.get("/getAllBlogs", catchAsync(blogController.getAllBlogs));
+router.get("/:_id", catchAsync(blogController.getSingleBlog));
 
 module.exports = router;
