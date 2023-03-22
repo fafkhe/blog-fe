@@ -15,4 +15,14 @@ export default {
       },
     });
   },
+  getAllBlogs: async (req, res, next) => {
+    const allblogs = await Blog.find({});
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        All: allblogs,
+      },
+    });
+  },
 };

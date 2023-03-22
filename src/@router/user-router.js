@@ -8,6 +8,6 @@ router.get("/", (_, res) => res.send("hello from /users/"));
 router.post("/signUp", catchAsync(userController.signUp));
 router.post("/login", catchAsync(userController.login));
 router.post("/me", catchAsync(userController.me));
-router.patch("/updateMe",catchAsync(userController.updateUser))
+router.patch("/edit", catchAsync(userController.updateMe));
 
 export default router;

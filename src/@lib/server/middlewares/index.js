@@ -5,6 +5,7 @@ export default (app) => {
   app.use(express.json());
 
   app.use((req, res, next) => {
+    console.log(req.headers);
     try {
       req.user = decodeToken(req.headers.auth);
     } catch (error) {
