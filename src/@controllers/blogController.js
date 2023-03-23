@@ -6,14 +6,10 @@ const { Blog } = Models;
 
 export default {
   createBlog: async (req, res, next) => {
-    console.log("ghable auth");
     const thisUser = await authorizeUser(req.user);
-    console.log("bade auth");
     const { title, content, imgurl } = req.body;
     if (!title || !content)
       throw new AppError("bad request: insufficient fields", 400);
-    console.log("***************************************");
-    console.log("bade if");
 
     const newBlog = await Blog.create({
       title,
@@ -55,7 +51,7 @@ export default {
     });
   },
   updateBlog: async (req, res, next) => {
-    const newBlog = await Blog.findByIdAndUpdate(req.params._id, req.body, {
+    const newBlog = await Blog.findByIdAndUpdate(req.params._id,   req.body, {
       new: true,
     });
     if (!newBlog) {
@@ -70,5 +66,16 @@ export default {
   },
   deleteBlog: async (req, res, next) => {
     const thisUser = await authorizeUser(req.user);
+    const thisBlog = await Blog.findById(req.params._id);
+    if (!thisBlog) throw new Error("no such blog exist");
+    thisBlog._checkIfImAuthor(thisUser);
+    // if (thisBlog.userId !== String(thisUser._id)
+    //   throw new Error("unathorized");
+    await Blog.findByIdAndDelete(req.params._id);
+
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
   },
 };

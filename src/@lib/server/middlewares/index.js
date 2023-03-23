@@ -15,7 +15,6 @@ export default (app) => {
   });
 
   app.use((req, res, next) => {
-    console.log("haha im running on the middleware by jix");
     next();
   });
 };
