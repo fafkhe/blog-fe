@@ -1,8 +1,11 @@
 import Models from "@models";
 import AppError from "@lib/appError";
 import authorizeUser from "@lib/auth/authorize-user";
+import { query } from "express";
 
 const { Blog } = Models;
+
+// pagination
 
 export default {
   createBlog: async (req, res, next) => {
@@ -26,12 +29,26 @@ export default {
     });
   },
   getAllBlogs: async (req, res, next) => {
-    const allblogs = await Blog.find({});
+    
+    // const allblogs = await Blog.find(req.query);
+    
+    const page = req.query.page || 0
+    const limit = req.query.limit || 2
 
-    res.status(201).json({
+    console.log(req.query)
+    
+      const findOption = {}
+    
+      const [total, result ] = await Promise.all([
+        Blog.find(findOption).countDocuments(),
+        Blog.find(findOption).skip(page * limit).limit(limit)
+      ])
+
+    res.status(201).json({ 
       status: "success",
+      // result: 
       data: {
-        All: allblogs,
+        total, result
       },
     });
   },
@@ -90,13 +107,13 @@ export default {
   },
   getMyBlogs: async (req, res, next) => {
     const thisUser = await authorizeUser(req.user);
-    const blogs = await Blog.find({userId : thisUser._id})
-    
+    const blogs = await Blog.find({ userId: thisUser._id });
+
     res.status(200).json({
       status: "success",
       data: {
         blogs: blogs,
       },
     });
-  }
+  },
 };
