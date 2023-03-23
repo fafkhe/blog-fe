@@ -31,6 +31,7 @@ blogSchema.methods = {
   },
 };
 
+
 export default mongoose.model("Blog", blogSchema);
 
 // title: String,

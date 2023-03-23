@@ -1,12 +1,26 @@
 import Models from "@models";
 import AppError from "@lib/appError";
+import authorizeUser from "@lib/auth/authorize-user";
 
 const { Blog } = Models;
 
 export default {
   createBlog: async (req, res, next) => {
-    flr("popopopopopopopo");
-    const newBlog = await Blog.create(req.body);
+    console.log("ghable auth");
+    const thisUser = await authorizeUser(req.user);
+    console.log("bade auth");
+    const { title, content, imgurl } = req.body;
+    if (!title || !content)
+      throw new AppError("bad request: insufficient fields", 400);
+    console.log("***************************************");
+    console.log("bade if");
+
+    const newBlog = await Blog.create({
+      title,
+      content,
+      imgurl,
+      userId: String(thisUser._id),
+    });
 
     res.status(201).json({
       status: "success",
@@ -27,10 +41,8 @@ export default {
   },
 
   getSingleBlog: async (req, res, next) => {
-    console.log("pop*******************");
     console.log(req.params);
     const singleBlog = await Blog.findById(req.params._id);
-    console.log("after single");
     if (!singleBlog) {
       return next(new AppError("No blog found with that ID", 404));
     }
@@ -41,5 +53,22 @@ export default {
         singleBlog,
       },
     });
+  },
+  updateBlog: async (req, res, next) => {
+    const newBlog = await Blog.findByIdAndUpdate(req.params._id, req.body, {
+      new: true,
+    });
+    if (!newBlog) {
+      return next(new AppError("No blog found with that ID", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      data: {
+        blog: newBlog,
+      },
+    });
+  },
+  deleteBlog: async (req, res, next) => {
+    const thisUser = await authorizeUser(req.user);
   },
 };

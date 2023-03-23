@@ -205,7 +205,7 @@ const endpoints = [
       "the _id returned in the resposne is the id of newly created blog which u can navigate to using it",
     ],
   },
-  // get a list of all blogs // anjam shod 
+  // get a list of all blogs 
   {
     endpoint: "http://localhost:4000/blog",
     method: "GET",
