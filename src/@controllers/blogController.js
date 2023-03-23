@@ -51,9 +51,19 @@ export default {
     });
   },
   updateBlog: async (req, res, next) => {
-    const newBlog = await Blog.findByIdAndUpdate(req.params._id,   req.body, {
-      new: true,
-    });
+    const thisUser = await authorizeUser(req.user);
+    const { title, content, imgurl } = req.body;
+    const newBlog = await Blog.findByIdAndUpdate(
+      req.params._id,
+      {
+        title,
+        content,
+        imgurl,
+      },
+      {
+        new: true,
+      }
+    );
     if (!newBlog) {
       return next(new AppError("No blog found with that ID", 404));
     }
