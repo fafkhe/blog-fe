@@ -88,4 +88,15 @@ export default {
       data: null,
     });
   },
+  getMyBlogs: async (req, res, next) => {
+    const thisUser = await authorizeUser(req.user);
+    const blogs = await Blog.find({userId : thisUser._id})
+    
+    res.status(200).json({
+      status: "success",
+      data: {
+        blogs: blogs,
+      },
+    });
+  }
 };
