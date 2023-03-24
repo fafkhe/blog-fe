@@ -5,6 +5,7 @@ const RateSchema = Schema(
     rate: Number,
     userId: String,
     blogId: String,
+    Creator: String,
   },
   {
     timestamps: true,

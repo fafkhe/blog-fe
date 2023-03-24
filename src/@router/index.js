@@ -1,5 +1,6 @@
 import userRouter from "./user-router";
 import blogRouter from "./blog-router";
+import commentRouter from "./comment-router";
 
 export default (app) => {
   app.get("/", (req, res) => {
@@ -8,6 +9,7 @@ export default (app) => {
 
   app.use("/user", userRouter);
   app.use("/blog", blogRouter);
+  app.use("/comment", commentRouter);
 
   app.all("*", (req, res, next) => {
     res.send("<h1> Ooops! 404! </h1>");

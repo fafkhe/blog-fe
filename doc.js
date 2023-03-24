@@ -363,7 +363,7 @@ const endpoints = [
     },
   },
   {
-    endpoint: "http://localhost:4000/comment/by-blog/:blogId",
+    endpoint: "http://localhost:4000/comment/:_id",
     method: "GET",
     requiresAuth: false,
     possibleErrors: [
