@@ -275,7 +275,7 @@ const endpoints = [
     ],
   },
   // delete a blog
-  // wel this
+  
   {
     endpoint: "http://localhost:4000/blog/delete",
     method: "POST",
