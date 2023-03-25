@@ -2,10 +2,31 @@ import Models from "@models";
 import AppError from "@lib/appError";
 import authorizeUser from "@lib/auth/authorize-user";
 
-
-const { Blog } = Models;
+const { Blog, User } = Models;
 
 // pagination
+
+const appendUser = async (blogs) => {
+  const preuserIds = blogs.map((item) => item.userId);
+  const userIds = [...new Set(preuserIds)];
+  const theseUsers = await User.find(
+    { _id: { $in: userIds } },
+    { password: 0 }
+  );
+
+  const cache = {};
+
+  theseUsers.forEach((user) => (cache[String(user._id)] = user));
+  console.log(cache);
+
+  for (const thisBlog of blogs) {
+    const thisUser = cache[thisBlog.userId];
+
+    thisBlog.user = thisUser;
+  }
+
+  return blogs;
+};
 
 export default {
   createBlog: async (req, res, next) => {
@@ -21,10 +42,14 @@ export default {
       userId: String(thisUser._id),
     });
 
+    const x = newBlog.toObject();
+
+    const blog = (await appendUser([x]))[0];
+
     res.status(201).json({
       status: "success",
       data: {
-        blog: newBlog,
+        blog,
       },
     });
   },
@@ -32,7 +57,7 @@ export default {
     // const allblogs = await Blog.find(req.query);
 
     const page = req.query.page || 0;
-    const limit = req.query.limit || 2;
+    const limit = req.query.limit || 10;
 
     console.log(req.query);
 
@@ -42,30 +67,35 @@ export default {
       Blog.find(findOption).countDocuments(),
       Blog.find(findOption)
         .skip(page * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
     ]);
+
+    const blogs = await appendUser(result);
 
     res.status(201).json({
       status: "success",
       // result:
       data: {
         total,
-        result,
+        result: blogs,
       },
     });
   },
 
   getSingleBlog: async (req, res, next) => {
     console.log(req.params);
-    const singleBlog = await Blog.findById(req.params._id);
+    const singleBlog = await Blog.findById(req.params._id).lean();
     if (!singleBlog) {
       return next(new AppError("No blog found with that ID", 404));
     }
 
+    const blog = (await appendUser([singleBlog]))[0];
+
     res.status(200).json({
       status: "success",
       data: {
-        singleBlog,
+        blog,
       },
     });
   },
@@ -86,10 +116,14 @@ export default {
     if (!newBlog) {
       return next(new AppError("No blog found with that ID", 404));
     }
+
+    const x = newBlog.toObject();
+    const blog = (await appendUser([x]))[0];
+
     res.status(200).json({
       status: "success",
       data: {
-        blog: newBlog,
+        blog,
       },
     });
   },
@@ -114,22 +148,23 @@ export default {
     const page = req.query.page || 0;
     const limit = req.query.limit || 2;
 
-    console.log(req.query);
-
     const findOption = { userId: String(thisUser._id) };
 
     const [total, result] = await Promise.all([
       Blog.find(findOption).countDocuments(),
       Blog.find(findOption)
         .skip(page * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
     ]);
+
+    const blogs = await appendUser(result);
 
     res.status(200).json({
       status: "success",
       data: {
         total,
-        result,
+        result: blogs,
       },
     });
   },
