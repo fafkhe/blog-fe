@@ -42,6 +42,18 @@ userSchema.methods = {
   _createToken: function () {
     return jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
   },
+  _calculateUserRate: async function () {
+    const allRates = await mongoose
+      .model("Rate")
+      .find({ userId: String(this._id) });
+
+    let total = 0;
+    for (const thisRate of allRates) total += thisRate.rate;
+
+    const averageScore = total / allRates.length;
+    this.averageScore = averageScore.toFixed(2);
+    await this.save();
+  },
 };
 
 export default mongoose.model("User", userSchema);

@@ -2,10 +2,14 @@ import mongoose, { Schema } from "mongoose";
 
 const RateSchema = Schema(
   {
-    rate: Number,
+    rate: {
+      type: Number,
+      min: [1, "a valid score is between 1-5"],
+      max: 5,
+    },
     userId: String,
     blogId: String,
-    Creator: String,
+    creatorId: String,
   },
   {
     timestamps: true,
