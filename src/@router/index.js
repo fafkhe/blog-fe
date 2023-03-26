@@ -16,7 +16,6 @@ export default (app) => {
   app.all("*", (req, res, next) => {
     res.send("<h1> Ooops! 404! </h1>");
 
-    // next(new AppError(`Cant find${req.originalUrl} on this server`, 404));
   });
 
   app.use((err, req, res, next) => {

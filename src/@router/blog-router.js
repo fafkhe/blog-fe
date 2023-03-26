@@ -1,7 +1,6 @@
 import { Router } from "express";
 import blogController from "../@controllers/blogController";
 import catchAsync from "@lib/catchAsync";
-import commentController from "../@controllers/commentController";
 
 const router = Router();
 

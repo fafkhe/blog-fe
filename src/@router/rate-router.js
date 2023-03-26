@@ -1,5 +1,4 @@
 import { Router } from "express";
-import blogController from "../@controllers/blogController";
 import catchAsync from "@lib/catchAsync";
 import rateContriller from "../@controllers/rateController";
 

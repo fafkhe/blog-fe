@@ -12,8 +12,7 @@ export default {
       authorizeUser(req.user),
       Blog.findById(blogId),
     ]);
-    // const thisUser = await authorizeUser(req.user);
-    // const thisBlog = await Blog.findById(blogId);
+    
     if (!thisBlog) throw new AppError("bad request: no such blog found", 404);
 
     if (!blogId || !score)
@@ -27,11 +26,6 @@ export default {
       })
     ])
 
-    // const targetUser = await User.findById(thisBlog.userId);
-    // const thisRate = await Rate.findOne({
-    //   creatorId: String(thisUser._id),
-    //   blogId: String(thisBlog._id),
-    // });
 
     if (thisRate) throw new AppError("you have already rate the blog");
 
@@ -42,13 +36,6 @@ export default {
       creatorId: String(thisUser._id),
     });
 
-    // calculate user rate
-
-    // await targetUser._calculateUserRate();
-
-    // // calculate blog rate
-
-    // await thisBlog._calculateBlogRate();
 
     await Promise.all([
       targetUser._calculateUserRate(),

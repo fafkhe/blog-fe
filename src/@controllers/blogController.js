@@ -4,7 +4,8 @@ import authorizeUser from "@lib/auth/authorize-user";
 
 const { Blog, User } = Models;
 
-// pagination
+
+// lazy load
 
 const appendUser = async (blogs) => {
   const preuserIds = blogs.map((item) => item.userId);
@@ -54,7 +55,6 @@ export default {
     });
   },
   getAllBlogs: async (req, res, next) => {
-    // const allblogs = await Blog.find(req.query);
 
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
@@ -75,7 +75,6 @@ export default {
 
     res.status(201).json({
       status: "success",
-      // result:
       data: {
         total,
         result: blogs,
@@ -132,8 +131,6 @@ export default {
     const thisBlog = await Blog.findById(req.params._id);
     if (!thisBlog) throw new Error("no such blog exist");
     thisBlog._checkIfImAuthor(thisUser);
-    // if (thisBlog.userId !== String(thisUser._id)
-    //   throw new Error("unathorized");
     await Blog.findByIdAndDelete(req.params._id);
 
     res.status(204).json({
@@ -143,8 +140,6 @@ export default {
   },
   getMyBlogs: async (req, res, next) => {
     const thisUser = await authorizeUser(req.user);
-    // const blogs = await Blog.find({ userId: thisUser._id });
-
     const page = req.query.page || 0;
     const limit = req.query.limit || 2;
 
@@ -171,8 +166,6 @@ export default {
 
   topBlogs: async (req, res, next) => {
     const topBlogs = await Blog.find({}).sort({ averageScore: -1 }).limit(3);
-    console.log(topBlogs);
-
     res.status(201).json({
       data: {
         topBlogs,
@@ -211,7 +204,6 @@ export default {
       status: "success",
       data: {
         total,
-
         result: blogs,
       },
     });

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import catchAsync from "@lib/catchAsync";
 import userController from "@controllers/user";
-import user from "../@controllers/user";
+
 const router = Router();
 
 router.get("/", catchAsync(userController.getAllUser));

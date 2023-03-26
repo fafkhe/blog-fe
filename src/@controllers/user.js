@@ -2,25 +2,7 @@ import Models from "@models";
 import AppError from "@lib/appError";
 import authorizeUser from "@lib/auth/authorize-user";
 
-const { User, Rate } = Models;
-
-const filterObj = (obj, ...allowedfields) => {
-  const newObj = {};
-  Object.keys(obj).forEach((el) => {
-    if (allowedfields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
-
-const jixfilter = (obj, unallowedFields = []) => {
-  const result = JSON.parse(JSON.stringify(obj));
-
-  unallowedFields.forEach((item) => {
-    delete result[item];
-  });
-
-  return result;
-};
+const { User} = Models;
 
 export default {
   signUp: async (req, res, next) => {
@@ -63,10 +45,6 @@ export default {
   },
   me: async (req, res, next) => {
     const thisUser = await authorizeUser(req.user);
-
-    // Blog.create({
-    //   userId: String(thisUser._id)
-    // })
 
     res.status(200).json(thisUser);
   },
@@ -112,8 +90,6 @@ export default {
   },
   topUsers: async (req, res, next) => {
     const topusers = await User.find({}).sort({ averageScore: -1 }).limit(3);
-    console.log("#####################################", topusers);
-
     res.status(201).json({ 
       data: {
         topusers,
