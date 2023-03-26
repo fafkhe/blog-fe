@@ -4,7 +4,6 @@ import authorizeUser from "@lib/auth/authorize-user";
 
 const { Blog, User } = Models;
 
-
 // lazy load
 
 const appendUser = async (blogs) => {
@@ -54,10 +53,8 @@ export default {
     });
   },
   getAllBlogs: async (req, res, next) => {
-
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
-
 
     const findOption = {};
 
@@ -82,9 +79,8 @@ export default {
 
   getSingleBlog: async (req, res, next) => {
     const singleBlog = await Blog.findById(req.params._id).lean();
-    if (!singleBlog) {
+    if (!singleBlog)
       return next(new AppError("No blog found with that ID", 404));
-    }
 
     const blog = (await appendUser([singleBlog]))[0];
 
@@ -96,8 +92,18 @@ export default {
     });
   },
   updateBlog: async (req, res, next) => {
-    const thisUser = await authorizeUser(req.user);
     const { title, content, imgurl } = req.body;
+    if (!title || !content)
+      throw new AppError("bad request: insufficient fields", 400);
+    const [thisBlog, thisUser] = await Promise.all([
+      Blog.findById(req.params._id),
+      authorizeUser(req.user),
+    ]);
+
+    if (!thisBlog) throw new AppError("bad request: no such blog found", 404);
+
+    thisBlog._checkIfImAuthor(thisUser);
+
     const newBlog = await Blog.findByIdAndUpdate(
       req.params._id,
       {
@@ -109,9 +115,6 @@ export default {
         new: true,
       }
     );
-    if (!newBlog) {
-      return next(new AppError("No blog found with that ID", 404));
-    }
 
     const x = newBlog.toObject();
     const blog = (await appendUser([x]))[0];
@@ -182,7 +185,6 @@ export default {
 
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
-
 
     const findOption = { userId };
 

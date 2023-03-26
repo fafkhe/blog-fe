@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import AppError from "@lib/appError";
+
 
 const blogSchema = Schema(
   {
@@ -27,7 +29,8 @@ const blogSchema = Schema(
 
 blogSchema.methods = {
   _checkIfImAuthor: function (thisUser) {
-    if (String(thisUser._id) !== this.userId) throw new Error("unathorized");
+    if (String(thisUser._id) !== this.userId)
+      throw new AppError("unathorized", 401);
   },
   _calculateBlogRate: async function () {
     const allRates = await mongoose
