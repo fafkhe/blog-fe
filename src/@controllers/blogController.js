@@ -168,4 +168,15 @@ export default {
       },
     });
   },
+
+  topBlogs: async (req, res, next) => {
+    const topBlogs = await Blog.find({}).sort({ averageScore: -1 }).limit(3);
+    console.log(topBlogs);
+
+    res.status(201).json({
+      data: {
+        topBlogs,
+      },
+    });
+  },
 };

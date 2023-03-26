@@ -114,7 +114,7 @@ export default {
     const topusers = await User.find({}).sort({ averageScore: -1 }).limit(3);
     console.log("#####################################", topusers);
 
-    res.status(201).json({
+    res.status(201).json({ 
       data: {
         topusers,
       },

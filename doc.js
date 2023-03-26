@@ -327,7 +327,7 @@ const endpoints = [
   },
   // top blogs
   {
-    endpoint: "http://localhost:4000/blog/top-blogs",
+    endpoint: "http://localhost:4000/blog/topusers",
     method: "GET",
     requiresAuth: false,
     response: "returns a list of top blogs based on their average score",

@@ -8,6 +8,7 @@ const router = Router();
 router.post("/createblog", catchAsync(blogController.createBlog));
 router.get("/getAllBlogs", catchAsync(blogController.getAllBlogs));
 router.get("/getmyblogs", catchAsync(blogController.getMyBlogs));
+router.get("/topblogs", catchAsync(blogController.topBlogs))
 router.delete("/:_id", catchAsync(blogController.deleteBlog));
 router.post("/:_id", catchAsync(blogController.updateBlog));
 router.get("/:_id", catchAsync(blogController.getSingleBlog));
