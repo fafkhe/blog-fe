@@ -7,19 +7,17 @@ const { Rate, Blog } = Models;
 
 export default {
   submitRate: async (req, res, next) => {
+    const { blogId, score } = req.body;
     const [thisUser, thisBlog] = await Promise.all([
       authorizeUser(req.user),
       Blog.findById(blogId),
     ]);
     // const thisUser = await authorizeUser(req.user);
     // const thisBlog = await Blog.findById(blogId);
-    const { blogId, score } = req.body;
     if (!thisBlog) throw new AppError("bad request: no such blog found", 404);
 
     if (!blogId || !score)
       throw new AppError("you probebly forgot the id or score");
-
-    // const Rate = awa
 
     const [targetUser, thisRate] = await Promise.all([
       User.findById(thisBlog.userId),
