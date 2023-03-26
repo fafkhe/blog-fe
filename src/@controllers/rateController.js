@@ -13,9 +13,9 @@ export default {
     ]);
     // const thisUser = await authorizeUser(req.user);
     // const thisBlog = await Blog.findById(blogId);
+    const { blogId, score } = req.body;
     if (!thisBlog) throw new AppError("bad request: no such blog found", 404);
 
-    const { blogId, score } = req.body;
     if (!blogId || !score)
       throw new AppError("you probebly forgot the id or score");
 

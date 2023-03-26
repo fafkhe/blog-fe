@@ -179,4 +179,41 @@ export default {
       },
     });
   },
+  blogByUsers: async (req, res, next) => {
+    const { userId } = req.body;
+    let thisUser;
+    try {
+      thisUser = await User.findById(userId);
+    } catch {
+      throw new AppError("bad request: no such user exists");
+    }
+
+    if (!thisUser) throw new AppError("bad request: no such user exists");
+
+    const page = req.query.page || 0;
+    const limit = req.query.limit || 10;
+
+    console.log(req.query);
+
+    const findOption = { userId };
+
+    const [total, result] = await Promise.all([
+      Blog.find(findOption).countDocuments(),
+      Blog.find(findOption)
+        .skip(page * limit)
+        .limit(limit)
+        .lean(),
+    ]);
+    const blogs = await appendUser(result);
+
+    console.log(userId);
+    res.status(201).json({
+      status: "success",
+      data: {
+        total,
+
+        result: blogs,
+      },
+    });
+  },
 };
