@@ -23,7 +23,6 @@ export default {
     const page = req.query.page || 0;
     const limit = req.query.limit || 2;
 
-    console.log(req.query);
 
     const findOption = { blogId: req.params._id };
 

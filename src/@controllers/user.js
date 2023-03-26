@@ -1,8 +1,39 @@
 import Models from "@models";
 import AppError from "@lib/appError";
 import authorizeUser from "@lib/auth/authorize-user";
+import multer from "multer";
 
-const { User} = Models;
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./src/public");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    const filename = `user-${req.user._id}-${Date.now()}.${ext}`;
+    req.filename = filename;
+    cb(null, filename);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+
+  if (!req.user || !req.user._id)
+    return cb(new AppError("unathorized", 401), false);
+
+
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("not an image!", 400), false);
+  }
+};
+
+export const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+const { User } = Models;
 
 export default {
   signUp: async (req, res, next) => {
@@ -90,10 +121,20 @@ export default {
   },
   topUsers: async (req, res, next) => {
     const topusers = await User.find({}).sort({ averageScore: -1 }).limit(3);
-    res.status(201).json({ 
+    res.status(201).json({
       data: {
         topusers,
       },
+    });
+  },
+  uploadAvatar: async (req, res, next) => {
+    await User.findByIdAndUpdate(req.user._id, {
+      $set: { imgurl: req.filename },
+    });
+
+    res.status(200).json({
+      status: "success",
+      msg: "successfully uploaded your data",
     });
   },
 };

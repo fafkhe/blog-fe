@@ -18,7 +18,6 @@ const appendUser = async (blogs) => {
   const cache = {};
 
   theseUsers.forEach((user) => (cache[String(user._id)] = user));
-  console.log(cache);
 
   for (const thisBlog of blogs) {
     const thisUser = cache[thisBlog.userId];
@@ -59,7 +58,6 @@ export default {
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
 
-    console.log(req.query);
 
     const findOption = {};
 
@@ -83,7 +81,6 @@ export default {
   },
 
   getSingleBlog: async (req, res, next) => {
-    console.log(req.params);
     const singleBlog = await Blog.findById(req.params._id).lean();
     if (!singleBlog) {
       return next(new AppError("No blog found with that ID", 404));
@@ -186,7 +183,6 @@ export default {
     const page = req.query.page || 0;
     const limit = req.query.limit || 10;
 
-    console.log(req.query);
 
     const findOption = { userId };
 
@@ -199,7 +195,6 @@ export default {
     ]);
     const blogs = await appendUser(result);
 
-    console.log(userId);
     res.status(201).json({
       status: "success",
       data: {

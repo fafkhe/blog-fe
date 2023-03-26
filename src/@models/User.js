@@ -15,7 +15,10 @@ const userSchema = Schema(
       required: [true, "provide a valid email"],
     },
     password: String,
-    imgurl: String,
+    imgurl: {
+      type: String,
+      default: null,
+    },
     bio: String,
     averageScore: {
       type: Number,
