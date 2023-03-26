@@ -127,8 +127,12 @@ export default {
     });
   },
   deleteBlog: async (req, res, next) => {
-    const thisUser = await authorizeUser(req.user);
-    const thisBlog = await Blog.findById(req.params._id);
+
+    const [thisUser, thisBlog] = await Promise.all([
+      authorizeUser(req.user),
+      Blog.findById(req.params._id)
+    ])
+
     if (!thisBlog) throw new Error("no such blog exist");
     thisBlog._checkIfImAuthor(thisUser);
     await Blog.findByIdAndDelete(req.params._id);
@@ -172,7 +176,7 @@ export default {
       },
     });
   },
-  blogByUsers: async (req, res, next) => {
+  blogsByUsers: async (req, res, next) => {
     const { userId } = req.body;
     let thisUser;
     try {

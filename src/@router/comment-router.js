@@ -7,7 +7,7 @@ import commentController from "../@controllers/commentController";
 const router = Router();
 
 
-router.post("/comment/submit" , catchAsync(commentController.submitComments))
+router.post("/submit" , catchAsync(commentController.submitComments))
 router.get("/:_id", catchAsync(commentController.geComment))
 
 

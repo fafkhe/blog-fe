@@ -16,10 +16,8 @@ const multerStorage = multer.diskStorage({
 });
 
 const multerFilter = (req, file, cb) => {
-
   if (!req.user || !req.user._id)
     return cb(new AppError("unathorized", 401), false);
-
 
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
@@ -44,7 +42,6 @@ export default {
       name: req.body.name,
       email: req.body.email,
       password: "1111",
-      imgurl: null,
     });
 
     const token = thisUser._createToken();
@@ -61,6 +58,8 @@ export default {
         throw new AppError("bad request: password and email are required", 400);
 
       const thisUser = await User.findOne({ email });
+      if (!thisUser)
+        throw new AppError("bad request: no such user found!!", 404);
 
       thisUser._checkPassword(password);
       const token = thisUser._createToken();
@@ -81,12 +80,11 @@ export default {
   },
 
   updateMe: async (req, res, next) => {
-    const thisUser = await authorizeUser(req.user);
-
     const { name, bio } = req.body;
 
     if (!name || !bio)
       throw new AppError("bad request: insufficient fields", 400);
+    const thisUser = await authorizeUser(req.user);
 
     await User.findByIdAndUpdate(thisUser._id, { $set: { name, bio } });
 
@@ -107,10 +105,9 @@ export default {
   singleUser: async (req, res, next) => {
     const SingleUser = await User.findById(req.params._id);
 
-    if (!SingleUser) {
+    if (!SingleUser) 
       throw new AppError("no such user exists", 404);
-    }
-
+    
     res.status(200).json({
       status: "success",
       data: {
@@ -119,6 +116,7 @@ export default {
       msg: "successfully",
     });
   },
+  
   topUsers: async (req, res, next) => {
     const topusers = await User.find({}).sort({ averageScore: -1 }).limit(3);
     res.status(201).json({
