@@ -10,6 +10,7 @@ router.post("/signUp", catchAsync(userController.signUp));
 router.post("/login", catchAsync(userController.login));
 router.post("/me", catchAsync(userController.me));
 router.patch("/edit", catchAsync(userController.updateMe));
+router.get("/top-users" , catchAsync(userController.topUsers))
 router.get("/:_id", catchAsync(userController.singleUser));
 
 export default router;

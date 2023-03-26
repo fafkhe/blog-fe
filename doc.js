@@ -131,7 +131,6 @@ const endpoints = [
     response: "returns a list of top users based on their average score",
   },
   // update avatar (upload image to server)
-  // wel this
   {
     endpoint: "http://localhost:4000/user/update-avatar",
     method: "POST",

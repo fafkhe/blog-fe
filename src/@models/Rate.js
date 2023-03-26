@@ -11,6 +11,7 @@ const RateSchema = Schema(
     blogId: String,
     creatorId: String,
   },
+  
   {
     timestamps: true,
   }

@@ -2,7 +2,7 @@ import Models from "@models";
 import AppError from "@lib/appError";
 import authorizeUser from "@lib/auth/authorize-user";
 
-const { User } = Models;
+const { User, Rate } = Models;
 
 const filterObj = (obj, ...allowedfields) => {
   const newObj = {};
@@ -72,7 +72,7 @@ export default {
   },
 
   updateMe: async (req, res, next) => {
-    const thisUser = await authorizeUser(req.user); 
+    const thisUser = await authorizeUser(req.user);
 
     const { name, bio } = req.body;
 
@@ -87,13 +87,13 @@ export default {
     });
   },
   getAllUser: async (req, res, next) => {
-    const AlUser = await User.find({})
+    const AlUser = await User.find({});
     res.status(200).json({
       status: "success",
       data: {
-        AlUser
-      }
-    })
+        AlUser,
+      },
+    });
   },
   singleUser: async (req, res, next) => {
     const SingleUser = await User.findById(req.params._id);
@@ -107,7 +107,17 @@ export default {
       data: {
         SingleUser,
       },
-      msg: "successfully ",
+      msg: "successfully",
+    });
+  },
+  topUsers: async (req, res, next) => {
+    const topusers = await User.find({}).sort({ averageScore: -1 }).limit(3);
+    console.log("#####################################", topusers);
+
+    res.status(201).json({
+      data: {
+        topusers,
+      },
     });
   },
 };

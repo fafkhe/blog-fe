@@ -17,7 +17,10 @@ const userSchema = Schema(
     password: String,
     imgurl: String,
     bio: String,
-    averageScore: Number,
+    averageScore: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
