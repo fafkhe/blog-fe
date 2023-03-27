@@ -2,7 +2,28 @@ import Models from "@models";
 import AppError from "@lib/appError";
 import authorizeUser from "@lib/auth/authorize-user";
 
-const { Comment, Blog } = Models;
+const { Comment, Blog, User } = Models;
+
+const appendUser = async (comments) => {
+  const preuserIds = comments.map((item) => item.userId);
+  const userIds = [...new Set(preuserIds)];
+  const theseUsers = await User.find(
+    { _id: { $in: userIds } },
+    { password: 0 }
+  );
+
+  const cache = {};
+
+  theseUsers.forEach((user) => (cache[String(user._id)] = user));
+
+  for (const thisComment of comments) {
+    const thisUser = cache[thisComment.userId];
+
+    thisComment.user = thisUser;
+  }
+
+  return comments;
+};
 
 export default {
   submitComments: async (req, res, next) => {
@@ -41,14 +62,19 @@ export default {
       Comment.find(findOption).countDocuments(),
       Comment.find(findOption)
         .skip(page * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
     ]);
+
+    const comments = await appendUser(result);
+
+    console.log(comments);
 
     res.status(200).json({
       status: "success",
       data: {
         total,
-        result,
+        result: comments,
       },
     });
   },

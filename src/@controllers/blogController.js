@@ -12,7 +12,7 @@ const appendUser = async (blogs) => {
   const theseUsers = await User.find(
     { _id: { $in: userIds } },
     { password: 0 }
-  );
+    );
 
   const cache = {};
 
@@ -42,6 +42,8 @@ export default {
     });
 
     const x = newBlog.toObject();
+
+    
 
     const blog = (await appendUser([x]))[0];
 
@@ -127,11 +129,10 @@ export default {
     });
   },
   deleteBlog: async (req, res, next) => {
-
     const [thisUser, thisBlog] = await Promise.all([
       authorizeUser(req.user),
-      Blog.findById(req.params._id)
-    ])
+      Blog.findById(req.params._id),
+    ]);
 
     if (!thisBlog) throw new Error("no such blog exist");
     thisBlog._checkIfImAuthor(thisUser);
